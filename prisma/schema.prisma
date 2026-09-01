@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AffiliateNetwork {
+  AMAZON_PAAPI
+  AWIN
+  TRADEDOUBLER
+  MANUAL_CSV
+  MOCK
+}
+
+enum AlertStatus {
+  ACTIVE
+  EXPIRED
+  REVIEWED
+}
+
+model Store {
+  id               String           @id @default(cuid())
+  name             String
+  slug             String           @unique
+  logoUrl          String?
+  affiliateNetwork AffiliateNetwork @default(MOCK)
+  active           Boolean          @default(true)
+  listings         Listing[]
+  createdAt        DateTime         @default(now())
+}
+
+model Category {
+  id       String     @id @default(cuid())
+  name     String
+  slug     String     @unique
+  parentId String?
+  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryTree")
+  products Product[]
+}
+
+model Product {
+  id         String    @id @default(cuid())
+  title      String
+  brand      String?
+  model      String?
+  ean        String?   @unique
+  imageUrl   String?
+  categoryId String
+  category   Category  @relation(fields: [categoryId], references: [id])
+  listings   Listing[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([title])
+}
+
+model Listing {
+  id           String         @id @default(cuid())
+  productId    String
+  product      Product        @relation(fields: [productId], references: [id])
+  storeId      String
+  store        Store          @relation(fields: [storeId], references: [id])
+  url          String
+  currentPrice Float
+  listPrice    Float?
+  currency     String         @default("EUR")
+  stock        Boolean        @default(true)
+  lastSeenAt   DateTime       @default(now())
+  priceHistory PriceHistory[]
+  alerts       PriceAlert[]
+  createdAt    DateTime       @default(now())
+
+  @@unique([productId, storeId])
+  @@index([storeId])
+}
+
+model PriceHistory {
+  id         String   @id @default(cuid())
+  listingId  String
+  listing    Listing  @relation(fields: [listingId], references: [id])
+  price      Float
+  capturedAt DateTime @default(now())
+
+  @@index([listingId, capturedAt])
+}
+
+model PriceAlert {
+  id             String      @id @default(cuid())
+  listingId      String
+  listing        Listing     @relation(fields: [listingId], references: [id])
+  dropPercent    Float
+  referencePrice Float
+  newPrice       Float
+  detectedAt     DateTime    @default(now())
+  status         AlertStatus @default(ACTIVE)
+
+  @@index([status])
+}
