@@ -64,8 +64,44 @@ que piden identidad y datos fiscales tuyos:
    ```
 
 4. Despliega en Vercel y conecta el cron ya definido en `vercel.json`
-   (cada 4 horas llama a `/api/ingest`, que recorre todos los adaptadores
+   (una vez al día llama a `/api/ingest`, que recorre todos los adaptadores
    activos y actualiza precios + genera alertas de error de precio).
+
+## Desplegar a producción (Vercel + Neon)
+
+Ninguno de estos pasos los puedo hacer yo por ti: requieren que crees tus
+propias cuentas (piden email/OAuth y aceptar condiciones). Una vez hechos,
+puedo ayudarte con la parte de comandos (push, migraciones, etc.).
+
+1. **Base de datos: Neon** — [neon.com](https://neon.com), crea un proyecto
+   gratis y copia el "connection string" (`postgres://...`). También puedes
+   crearla directamente desde Vercel (paso 3, pestaña *Storage*), que la
+   integra automáticamente sin copiar nada a mano.
+
+2. **Sube el código a GitHub** — crea un repositorio vacío en
+   [github.com/new](https://github.com/new) y avísame del nombre/URL; yo
+   añado el remoto y hago el push del commit que ya tenemos.
+
+3. **Importa el proyecto en Vercel** — [vercel.com/new](https://vercel.com/new),
+   importa el repo de GitHub. En *Environment Variables* añade:
+   - `DATABASE_URL` (de Neon, si no usaste la integración automática)
+   - `PRICE_ERROR_DROP_THRESHOLD` = `0.6`
+   - `CRON_SECRET` = un valor aleatorio (pídemelo y te genero uno)
+   Pulsa *Deploy*.
+
+4. **Crea las tablas en la base de datos de producción** — en local, con
+   `DATABASE_URL` apuntando a Neon:
+   ```bash
+   npx prisma db push
+   npm run db:seed   # opcional, para tener datos de ejemplo visibles ya
+   ```
+
+5. **Cron de ingesta** — ya configurado en `vercel.json` (una vez al día,
+   límite del plan gratuito Hobby de Vercel; con plan Pro se puede bajar a
+   cada minuto). Se activa solo al desplegar, no requiere nada más.
+
+6. **Dominio propio (opcional)** — Vercel da uno `*.vercel.app` gratis;
+   puedes añadir el tuyo en *Project Settings → Domains*.
 
 ## Notas legales
 
