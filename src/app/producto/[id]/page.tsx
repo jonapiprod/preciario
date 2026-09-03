@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/format";
+import { getCurrentUser } from "@/lib/auth/dal";
+import FavoriteButton from "@/components/FavoriteButton";
 
 export default async function ProductPage({
   params,
@@ -24,6 +26,13 @@ export default async function ProductPage({
   });
 
   if (!product) notFound();
+
+  const user = await getCurrentUser();
+  const isFavorited = user
+    ? (await prisma.favoriteProduct.findUnique({
+        where: { userId_productId: { userId: user.id, productId: product.id } },
+      })) !== null
+    : false;
 
   const cheapest = product.listings[0];
 
@@ -47,7 +56,15 @@ export default async function ProductPage({
         </div>
         <div>
           <span className="text-xs text-gray-500">{product.category.name}</span>
-          <h1 className="text-2xl font-bold text-gray-900">{product.title}</h1>
+          <h1 className="flex items-center gap-2 text-2xl font-bold text-gray-900">
+            {product.title}
+            <FavoriteButton
+              kind="product"
+              id={product.id}
+              initiallyFavorited={isFavorited}
+              isLoggedIn={user !== null}
+            />
+          </h1>
           {product.brand && (
             <p className="mt-1 text-sm text-gray-500">Marca: {product.brand}</p>
           )}

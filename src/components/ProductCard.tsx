@@ -2,8 +2,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { formatPrice } from "@/lib/format";
 import type { ProductSummary } from "@/lib/types";
+import FavoriteButton from "@/components/FavoriteButton";
 
-export default function ProductCard({ product }: { product: ProductSummary }) {
+export default function ProductCard({
+  product,
+  isFavorited = false,
+  isLoggedIn = false,
+}: {
+  product: ProductSummary;
+  isFavorited?: boolean;
+  isLoggedIn?: boolean;
+}) {
   if (product.listings.length === 0) return null;
 
   const cheapest = [...product.listings].sort((a, b) => a.currentPrice - b.currentPrice)[0];
@@ -33,6 +42,13 @@ export default function ProductCard({ product }: { product: ProductSummary }) {
             -{discount}%
           </span>
         )}
+        <FavoriteButton
+          kind="product"
+          id={product.id}
+          initiallyFavorited={isFavorited}
+          isLoggedIn={isLoggedIn}
+          className="absolute right-2 top-2 rounded-full bg-white/90 px-2 py-1 shadow-sm"
+        />
       </div>
       <div className="flex flex-1 flex-col gap-1 p-3">
         <span className="text-xs text-gray-500">{product.category.name}</span>

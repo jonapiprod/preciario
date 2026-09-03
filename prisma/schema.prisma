@@ -33,29 +33,64 @@ model Store {
 }
 
 model Category {
-  id       String     @id @default(cuid())
-  name     String
-  slug     String     @unique
-  parentId String?
-  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id])
-  children Category[] @relation("CategoryTree")
-  products Product[]
+  id         String             @id @default(cuid())
+  name       String
+  slug       String             @unique
+  parentId   String?
+  parent     Category?          @relation("CategoryTree", fields: [parentId], references: [id])
+  children   Category[]         @relation("CategoryTree")
+  products   Product[]
+  favoritedBy FavoriteCategory[]
 }
 
 model Product {
-  id         String    @id @default(cuid())
-  title      String
-  brand      String?
-  model      String?
-  ean        String?   @unique
-  imageUrl   String?
-  categoryId String
-  category   Category  @relation(fields: [categoryId], references: [id])
-  listings   Listing[]
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id          String            @id @default(cuid())
+  title       String
+  brand       String?
+  model       String?
+  ean         String?           @unique
+  imageUrl    String?
+  categoryId  String
+  category    Category          @relation(fields: [categoryId], references: [id])
+  listings    Listing[]
+  favoritedBy FavoriteProduct[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
 
   @@index([title])
+}
+
+model User {
+  id                 String             @id @default(cuid())
+  email              String             @unique
+  passwordHash       String
+  telegramChatId     String?            @unique
+  telegramLinkCode   String?            @unique
+  createdAt          DateTime           @default(now())
+  favoriteProducts   FavoriteProduct[]
+  favoriteCategories FavoriteCategory[]
+}
+
+model FavoriteProduct {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+}
+
+model FavoriteCategory {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, categoryId])
 }
 
 model Listing {

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { CATEGORIES } from "@/lib/catalog";
+import { getCurrentUser } from "@/lib/auth/dal";
 import CategoryFilter from "@/components/CategoryFilter";
 import StoreFilter from "@/components/StoreFilter";
 import SearchForm from "@/components/SearchForm";
@@ -38,7 +39,9 @@ export default async function Home({
   const minPrice = params.minPrice ? Number(params.minPrice) : undefined;
   const maxPrice = params.maxPrice ? Number(params.maxPrice) : undefined;
 
-  const [stores, products] = await Promise.all([
+  const user = await getCurrentUser();
+
+  const [stores, products, favoriteProductIds, favoriteCategorySlugs] = await Promise.all([
     prisma.store.findMany({ where: { active: true }, orderBy: { name: "asc" } }),
     prisma.product.findMany({
       where: {
@@ -55,6 +58,16 @@ export default async function Home({
       },
       take: 60,
     }),
+    user
+      ? prisma.favoriteProduct
+          .findMany({ where: { userId: user.id }, select: { productId: true } })
+          .then((rows) => new Set(rows.map((r) => r.productId)))
+      : Promise.resolve(new Set<string>()),
+    user
+      ? prisma.favoriteCategory
+          .findMany({ where: { userId: user.id }, include: { category: true } })
+          .then((rows) => new Set(rows.map((r) => r.category.slug)))
+      : Promise.resolve(new Set<string>()),
   ]);
 
   let visibleProducts = products.filter((p) => p.listings.length > 0) as ProductSummary[];
@@ -89,6 +102,8 @@ export default async function Home({
           categories={CATEGORIES.map((c) => ({ slug: c.slug, name: c.name }))}
           activeSlug={category}
           currentParams={currentParams}
+          favoritedSlugs={favoriteCategorySlugs}
+          isLoggedIn={user !== null}
         />
         <div className="flex flex-wrap items-center justify-between gap-3">
           <StoreFilter
@@ -131,7 +146,12 @@ export default async function Home({
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {visibleProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard
+              key={product.id}
+              product={product}
+              isFavorited={favoriteProductIds.has(product.id)}
+              isLoggedIn={user !== null}
+            />
           ))}
         </div>
       )}

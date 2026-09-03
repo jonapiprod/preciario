@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { evaluatePriceDrop } from "@/lib/priceDetection";
+import { notifyFavoritedUsers } from "@/lib/telegramAlerts";
 import type { PriceSourceAdapter, RawListing } from "@/lib/adapters/types";
 
 const HISTORY_WINDOW = 14;
@@ -62,13 +63,14 @@ export interface IngestSummary {
   error?: string;
 }
 
-async function ingestListing(storeId: string, listing: RawListing): Promise<boolean> {
+async function ingestListing(storeId: string, storeName: string, listing: RawListing): Promise<boolean> {
   const categoryId = await resolveCategoryId(listing.categorySlug);
   const productId = await resolveProductId(listing, categoryId);
 
   const existingListing = await prisma.listing.findUnique({
     where: { productId_storeId: { productId, storeId } },
   });
+  const previousPrice = existingListing?.currentPrice;
 
   const history = existingListing
     ? await prisma.priceHistory.findMany({
@@ -117,7 +119,30 @@ async function ingestListing(storeId: string, listing: RawListing): Promise<bool
         newPrice: listing.price,
       },
     });
+    await notifyFavoritedUsers({
+      productId,
+      categoryId,
+      title: listing.title,
+      storeName,
+      newPrice: listing.price,
+      previousPrice: previousPrice ?? evaluation.referencePrice,
+      isError: true,
+      referencePrice: evaluation.referencePrice,
+      dropPercent: evaluation.dropPercent,
+    });
     return true;
+  }
+
+  if (previousPrice !== undefined && listing.price < previousPrice) {
+    await notifyFavoritedUsers({
+      productId,
+      categoryId,
+      title: listing.title,
+      storeName,
+      newPrice: listing.price,
+      previousPrice,
+      isError: false,
+    });
   }
 
   return false;
@@ -138,7 +163,7 @@ export async function ingestFromAdapter(adapter: PriceSourceAdapter): Promise<In
     const listings = await adapter.fetchListings();
     let alertsCreated = 0;
     for (const listing of listings) {
-      const created = await ingestListing(store.id, listing);
+      const created = await ingestListing(store.id, adapter.storeName, listing);
       if (created) alertsCreated++;
     }
     return { storeSlug: adapter.storeSlug, listingsProcessed: listings.length, alertsCreated };
