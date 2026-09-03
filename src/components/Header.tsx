@@ -8,36 +8,36 @@ export default async function Header() {
   return (
     <header className="border-b border-black/10 bg-white">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-        <Link href="/" className="text-lg font-semibold tracking-tight">
-          Chollos<span className="text-orange-600">Tech</span>
+        <Link href="/" className="font-display text-lg font-bold tracking-tight">
+          Chollos<span className="text-red-600">Tech</span>
         </Link>
         <nav className="flex items-center gap-6 text-sm font-medium">
-          <Link href="/" className="hover:text-orange-600">
+          <Link href="/" className="nav-link">
             Inicio
           </Link>
-          <Link href="/errores-de-precio" className="hover:text-orange-600">
+          <Link href="/errores-de-precio" className="nav-link">
             🔥 Errores de precio
           </Link>
           {user ? (
             <>
-              <Link href="/favoritos" className="hover:text-orange-600">
+              <Link href="/favoritos" className="nav-link">
                 ❤️ Favoritos
               </Link>
-              <Link href="/perfil" className="hover:text-orange-600">
+              <Link href="/perfil" className="nav-link">
                 Perfil
               </Link>
               <form action={logout}>
-                <button type="submit" className="text-gray-500 hover:text-orange-600">
+                <button type="submit" className="nav-link text-gray-500">
                   Salir
                 </button>
               </form>
             </>
           ) : (
             <>
-              <Link href="/login" className="hover:text-orange-600">
+              <Link href="/login" className="nav-link">
                 Entrar
               </Link>
-              <Link href="/registro" className="hover:text-orange-600">
+              <Link href="/registro" className="nav-link">
                 Registro
               </Link>
             </>

@@ -38,7 +38,7 @@ export default function ProductCard({
           />
         )}
         {discount !== null && discount > 0 && (
-          <span className="absolute left-2 top-2 rounded bg-red-600 px-2 py-1 text-xs font-bold text-white">
+          <span className="absolute left-2 top-2 -rotate-6 rounded bg-red-600 px-2 py-1 font-display text-xs font-bold text-white shadow-sm">
             -{discount}%
           </span>
         )}
@@ -52,11 +52,11 @@ export default function ProductCard({
       </div>
       <div className="flex flex-1 flex-col gap-1 p-3">
         <span className="text-xs text-gray-500">{product.category.name}</span>
-        <h3 className="line-clamp-2 text-sm font-medium text-gray-900 group-hover:text-orange-600">
+        <h3 className="line-clamp-2 text-sm font-medium text-gray-900 group-hover:text-red-600">
           {product.title}
         </h3>
         <div className="mt-auto flex items-baseline gap-2 pt-2">
-          <span className="text-lg font-bold text-gray-900">
+          <span className="font-display text-lg font-bold text-gray-900">
             {formatPrice(cheapest.currentPrice)}
           </span>
           {cheapest.listPrice && cheapest.listPrice > cheapest.currentPrice && (

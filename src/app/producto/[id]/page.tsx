@@ -38,7 +38,7 @@ export default async function ProductPage({
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
-      <Link href="/" className="text-sm text-gray-500 hover:text-orange-600">
+      <Link href="/" className="text-sm text-gray-500 hover:text-red-600">
         &larr; Volver a la búsqueda
       </Link>
 
@@ -56,7 +56,7 @@ export default async function ProductPage({
         </div>
         <div>
           <span className="text-xs text-gray-500">{product.category.name}</span>
-          <h1 className="flex items-center gap-2 text-2xl font-bold text-gray-900">
+          <h1 className="flex items-center gap-2 text-2xl font-display font-bold text-gray-900">
             {product.title}
             <FavoriteButton
               kind="product"
@@ -69,7 +69,7 @@ export default async function ProductPage({
             <p className="mt-1 text-sm text-gray-500">Marca: {product.brand}</p>
           )}
           {cheapest && (
-            <p className="mt-4 text-3xl font-bold text-orange-600">
+            <p className="mt-4 font-display text-3xl font-bold text-red-600">
               {formatPrice(cheapest.currentPrice)}
               <span className="ml-2 text-sm font-normal text-gray-500">
                 mejor precio en {cheapest.store.name}

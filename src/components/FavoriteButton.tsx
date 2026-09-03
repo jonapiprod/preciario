@@ -21,9 +21,12 @@ export default function FavoriteButton({
 }: FavoriteButtonProps) {
   const [favorited, setFavorited] = useState(initiallyFavorited);
   const [isPending, startTransition] = useTransition();
+  const [isWiggling, setIsWiggling] = useState(false);
 
-  const colorClasses = favorited ? "text-orange-600" : "text-gray-300 hover:text-orange-500";
-  const baseClasses = `text-lg leading-none transition ${colorClasses} ${className ?? ""}`;
+  const colorClasses = favorited ? "text-red-600" : "text-gray-300 hover:text-red-500";
+  const baseClasses = `text-lg leading-none transition ${colorClasses} ${
+    isWiggling ? "animate-wiggle" : ""
+  } ${className ?? ""}`;
 
   if (!isLoggedIn) {
     return (
@@ -50,8 +53,10 @@ export default function FavoriteButton({
           const result =
             kind === "product" ? await toggleFavoriteProduct(id) : await toggleFavoriteCategory(id);
           setFavorited(result.favorited);
+          setIsWiggling(true);
         });
       }}
+      onAnimationEnd={() => setIsWiggling(false)}
       className={baseClasses}
     >
       {favorited ? "♥" : "♡"}

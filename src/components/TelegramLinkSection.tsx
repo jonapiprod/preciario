@@ -56,7 +56,7 @@ export default function TelegramLinkSection({ connected, initialCode }: Telegram
             setCode(newCode);
           })
         }
-        className="mt-3 rounded-md bg-orange-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-orange-700 disabled:opacity-50"
+        className="btn-tactile mt-3 rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
       >
         {code ? "Generar otro código" : "Generar código de vinculación"}
       </button>

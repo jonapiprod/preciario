@@ -34,7 +34,7 @@ export default async function FavoritesPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
-      <h1 className="text-2xl font-bold text-gray-900">❤️ Tus favoritos</h1>
+      <h1 className="text-2xl font-display font-bold text-gray-900">❤️ Tus favoritos</h1>
 
       <h2 className="mt-8 mb-3 text-lg font-semibold text-gray-900">Categorías</h2>
       {favoriteCategories.length === 0 ? (

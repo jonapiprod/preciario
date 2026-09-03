@@ -18,7 +18,7 @@ export default async function PriceErrorsPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="text-2xl font-bold text-gray-900">🔥 Errores de precio</h1>
+      <h1 className="text-2xl font-display font-bold text-gray-900">🔥 Errores de precio</h1>
       <p className="mt-2 text-sm text-gray-600">
         Caídas de precio de más del 60% respecto al histórico reciente del
         producto. Pueden ser errores de la tienda: se corrigen o se agotan

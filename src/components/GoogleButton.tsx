@@ -5,7 +5,7 @@ export default function GoogleButton({ enabled }: { enabled: boolean }) {
     <>
       <a
         href="/api/auth/google/start"
-        className="flex w-full items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+        className="btn-tactile flex w-full items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
       >
         <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
           <path

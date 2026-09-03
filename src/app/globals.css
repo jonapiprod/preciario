@@ -1,10 +1,80 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-work-sans);
+  --font-display: var(--font-bricolage);
 }
 
 body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+@keyframes wiggle {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  20% {
+    transform: rotate(-18deg) scale(1.15);
+  }
+  45% {
+    transform: rotate(14deg) scale(1.1);
+  }
+  65% {
+    transform: rotate(-8deg) scale(1.05);
+  }
+  85% {
+    transform: rotate(4deg) scale(1);
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+.animate-wiggle {
+  animation: wiggle 480ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-wiggle {
+    animation: none;
+  }
+}
+
+.nav-link {
+  display: inline-block;
+  transition:
+    color 150ms ease,
+    transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.nav-link:hover {
+  color: var(--color-red-600);
+  transform: rotate(-2deg) translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-link:hover {
+    transform: none;
+  }
+}
+
+.btn-tactile {
+  transition:
+    transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 150ms ease;
+}
+
+.btn-tactile:hover {
+  transform: translateY(-2px) rotate(-1deg);
+}
+
+.btn-tactile:active {
+  transform: translateY(1px) scale(1.04, 0.94);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-tactile:hover,
+  .btn-tactile:active {
+    transform: none;
+  }
 }

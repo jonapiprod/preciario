@@ -16,11 +16,11 @@ export default function SearchForm({ defaultValue, category, store, sort }: Sear
         name="q"
         defaultValue={defaultValue}
         placeholder="Busca un producto: smartphone, portátil, tarjeta gráfica..."
-        className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm focus:border-orange-500 focus:outline-none"
+        className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm focus:border-red-500 focus:outline-none"
       />
       <button
         type="submit"
-        className="rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700"
+        className="btn-tactile rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
       >
         Buscar
       </button>

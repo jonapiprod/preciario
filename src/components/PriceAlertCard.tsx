@@ -30,17 +30,17 @@ export default function PriceAlertCard({ alert }: { alert: PriceAlertSummary }) 
         )}
       </div>
       <div className="flex flex-1 flex-col gap-1">
-        <span className="w-fit rounded bg-red-600 px-2 py-0.5 text-xs font-bold text-white">
+        <span className="w-fit -rotate-3 rounded bg-red-600 px-2 py-0.5 font-display text-xs font-bold text-white shadow-sm">
           -{formatPercent(alert.dropPercent)} de golpe
         </span>
         <Link
           href={`/producto/${alert.listing.product.id}`}
-          className="text-sm font-medium text-gray-900 hover:text-orange-600"
+          className="text-sm font-medium text-gray-900 hover:text-red-600"
         >
           {alert.listing.product.title}
         </Link>
         <div className="flex items-baseline gap-2">
-          <span className="text-lg font-bold text-gray-900">
+          <span className="font-display text-lg font-bold text-gray-900">
             {formatPrice(alert.newPrice)}
           </span>
           <span className="text-xs text-gray-500 line-through">

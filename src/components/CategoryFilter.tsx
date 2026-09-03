@@ -23,8 +23,8 @@ export default function CategoryFilter({
         href={buildHref("/", currentParams, { category: undefined })}
         className={`rounded-full border px-3 py-1 text-sm transition ${
           !activeSlug
-            ? "border-orange-600 bg-orange-600 text-white"
-            : "border-gray-300 bg-white hover:border-orange-400"
+            ? "border-red-600 bg-red-600 text-white"
+            : "border-gray-300 bg-white hover:border-red-400"
         }`}
       >
         Todas las categorías
@@ -36,8 +36,8 @@ export default function CategoryFilter({
             key={category.slug}
             className={`flex items-center gap-1 rounded-full border pl-3 pr-2 py-1 text-sm transition ${
               isActive
-                ? "border-orange-600 bg-orange-600 text-white"
-                : "border-gray-300 bg-white hover:border-orange-400"
+                ? "border-red-600 bg-red-600 text-white"
+                : "border-gray-300 bg-white hover:border-red-400"
             }`}
           >
             <Link
