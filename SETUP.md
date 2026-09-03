@@ -105,30 +105,42 @@ puedo ayudarte con la parte de comandos (push, migraciones, etc.).
 
 ## Cuentas de usuario, favoritos y alertas por Telegram
 
-La web ya soporta registro/login (`/registro`, `/login`), marcar productos
-y categorías como favoritos, y avisos de bajada de precio por Telegram para
-lo que tengas en favoritos.
+La web ya soporta registro/login (`/registro`, `/login`, también con
+Google), marcar productos y categorías como favoritos, y avisos de bajada
+de precio por Telegram para lo que tengas en favoritos.
 
 1. **`SESSION_SECRET`** — necesaria para que funcione el login. Genera un
    valor aleatorio (`openssl rand -hex 32`) y añádelo en Vercel igual que
    `CRON_SECRET`. No lo cambies una vez en producción: invalidaría la
    sesión de todos los usuarios registrados.
 
-2. **Crear el bot de Telegram** (opcional, solo si quieres las alertas):
+2. **Login con Google** (opcional) — en
+   [Google Cloud Console → Credentials](https://console.cloud.google.com/apis/credentials):
+   - Crea un proyecto si no tienes uno, y un **OAuth client ID** de tipo
+     *Aplicación web*.
+   - En *Authorized redirect URIs* añade **ambas**:
+     `http://localhost:3000/api/auth/google/callback` (para probar en
+     local) y `https://<tu-dominio>/api/auth/google/callback`
+     (producción).
+   - Te da un **Client ID** y un **Client Secret** — pásamelos y los pongo
+     como `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` en Vercel (y en tu
+     `.env` local si quieres probarlo ahí).
+
+3. **Crear el bot de Telegram** (opcional, solo si quieres las alertas):
    - Abre Telegram, busca **@BotFather** y envíale `/newbot`.
    - Sigue las instrucciones (nombre del bot, nombre de usuario terminado
      en `bot`). Te dará un **token** — pásamelo y me encargo del resto.
    - Añade `TELEGRAM_BOT_TOKEN` (el token) y `TELEGRAM_WEBHOOK_SECRET` (un
      valor aleatorio, te lo genero yo) en Vercel.
 
-3. **Registrar el webhook** — una vez desplegado con esas variables, hay
+4. **Registrar el webhook** — una vez desplegado con esas variables, hay
    que decirle a Telegram dónde mandar los mensajes que reciba el bot
    (ejecútalo tú o dímelo y lo hago yo con el token):
    ```bash
    curl "https://api.telegram.org/bot<TELEGRAM_BOT_TOKEN>/setWebhook?url=https://<tu-dominio>/api/telegram/webhook&secret_token=<TELEGRAM_WEBHOOK_SECRET>"
    ```
 
-4. **Vincular Telegram** — cada usuario, desde `/perfil`, genera un código
+5. **Vincular Telegram** — cada usuario, desde `/perfil`, genera un código
    y se lo envía al bot como `/start <código>` desde su propio Telegram
    para empezar a recibir avisos.
 

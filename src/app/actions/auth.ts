@@ -43,7 +43,13 @@ export async function login(_state: AuthFormState, formData: FormData): Promise<
   const { email, password } = validatedFields.data;
 
   const user = await prisma.user.findUnique({ where: { email } });
-  if (!user || !(await verifyPassword(password, user.passwordHash))) {
+  if (!user) {
+    return { message: "Email o contraseña incorrectos." };
+  }
+  if (!user.passwordHash) {
+    return { message: "Esta cuenta se creó con Google. Usa el botón 'Continuar con Google'." };
+  }
+  if (!(await verifyPassword(password, user.passwordHash))) {
     return { message: "Email o contraseña incorrectos." };
   }
 

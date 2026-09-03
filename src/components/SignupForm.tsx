@@ -3,12 +3,14 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import { signup } from "@/app/actions/auth";
+import GoogleButton from "@/components/GoogleButton";
 
-export default function SignupForm() {
+export default function SignupForm({ googleEnabled }: { googleEnabled: boolean }) {
   const [state, action, pending] = useActionState(signup, undefined);
 
   return (
     <form action={action} className="space-y-4">
+      <GoogleButton enabled={googleEnabled} />
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-gray-700">
           Email
