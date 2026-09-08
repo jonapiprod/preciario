@@ -8,7 +8,8 @@ import { requireUser } from "@/lib/auth/dal";
 export async function generateTelegramLinkCode(): Promise<string> {
   const user = await requireUser();
 
-  const code = randomBytes(4).toString("hex");
+  // 16 bytes (128 bits) para que sea inviable de adivinar por fuerza bruta.
+  const code = randomBytes(16).toString("hex");
   await prisma.user.update({
     where: { id: user.id },
     data: { telegramLinkCode: code },

@@ -11,11 +11,13 @@ interface TelegramUpdate {
 
 export async function POST(request: Request) {
   const secret = process.env.TELEGRAM_WEBHOOK_SECRET;
-  if (secret) {
-    const headerSecret = request.headers.get("x-telegram-bot-api-secret-token");
-    if (headerSecret !== secret) {
-      return NextResponse.json({ error: "No autorizado" }, { status: 401 });
-    }
+  if (!secret) {
+    console.error("TELEGRAM_WEBHOOK_SECRET no está configurado: se rechaza el webhook por seguridad.");
+    return NextResponse.json({ error: "No configurado" }, { status: 503 });
+  }
+  const headerSecret = request.headers.get("x-telegram-bot-api-secret-token");
+  if (headerSecret !== secret) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
 
   const update = (await request.json()) as TelegramUpdate;

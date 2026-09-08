@@ -7,11 +7,13 @@ import { ingestFromAllActiveAdapters } from "@/lib/ingest";
 // con CRON_SECRET para que no sea invocable públicamente.
 async function handleIngest(request: Request) {
   const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const authHeader = request.headers.get("authorization");
-    if (authHeader !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: "No autorizado" }, { status: 401 });
-    }
+  if (!secret) {
+    console.error("CRON_SECRET no está configurado: se rechaza la ingesta por seguridad.");
+    return NextResponse.json({ error: "No configurado" }, { status: 503 });
+  }
+  const authHeader = request.headers.get("authorization");
+  if (authHeader !== `Bearer ${secret}`) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
 
   const summaries = await ingestFromAllActiveAdapters(getActiveAdapters());
