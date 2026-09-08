@@ -37,10 +37,15 @@ export async function GET(request: Request) {
       user = existingByEmail
         ? await prisma.user.update({
             where: { id: existingByEmail.id },
-            data: { googleId: identity.sub },
+            data: { googleId: identity.sub, emailVerified: true },
           })
         : await prisma.user.create({
-            data: { email: identity.email, googleId: identity.sub, passwordHash: null },
+            data: {
+              email: identity.email,
+              googleId: identity.sub,
+              passwordHash: null,
+              emailVerified: true,
+            },
           });
     }
 

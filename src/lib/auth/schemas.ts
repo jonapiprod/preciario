@@ -15,5 +15,6 @@ export type AuthFormState =
         password?: string[];
       };
       message?: string;
+      success?: boolean;
     }
   | undefined;

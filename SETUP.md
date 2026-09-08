@@ -106,8 +106,9 @@ puedo ayudarte con la parte de comandos (push, migraciones, etc.).
 ## Cuentas de usuario, favoritos y alertas por Telegram
 
 La web ya soporta registro/login (`/registro`, `/login`, también con
-Google), marcar productos y categorías como favoritos, y avisos de bajada
-de precio por Telegram para lo que tengas en favoritos.
+Google) con verificación de email obligatoria, marcar productos y
+categorías como favoritos, y avisos de bajada de precio por Telegram para
+lo que tengas en favoritos.
 
 1. **`SESSION_SECRET`** — necesaria para que funcione el login. Genera un
    valor aleatorio (`openssl rand -hex 32`) y añádelo en Vercel igual que
@@ -126,21 +127,35 @@ de precio por Telegram para lo que tengas en favoritos.
      como `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` en Vercel (y en tu
      `.env` local si quieres probarlo ahí).
 
-3. **Crear el bot de Telegram** (opcional, solo si quieres las alertas):
+3. **Verificación de email (Resend)** — imprescindible para que el
+   registro por contraseña funcione de verdad (sin esto, nadie puede
+   verificar su cuenta ni iniciar sesión con contraseña; el login con
+   Google no lo necesita porque Google ya verifica el email):
+   - Crea cuenta en [resend.com](https://resend.com) (tiene plan gratis,
+     3.000 emails/mes).
+   - En el Dashboard → **API Keys** → crea una nueva.
+   - Pásame la clave — la pongo como `RESEND_API_KEY` en Vercel. Sin
+     dominio propio verificado en Resend, se envía igualmente desde su
+     dominio de pruebas (`onboarding@resend.dev`), válido para cualquier
+     destinatario.
+   - Si más adelante compras un dominio propio y lo verificas en Resend,
+     cambia `EMAIL_FROM` para enviar desde tu propio dominio.
+
+4. **Crear el bot de Telegram** (opcional, solo si quieres las alertas):
    - Abre Telegram, busca **@BotFather** y envíale `/newbot`.
    - Sigue las instrucciones (nombre del bot, nombre de usuario terminado
      en `bot`). Te dará un **token** — pásamelo y me encargo del resto.
    - Añade `TELEGRAM_BOT_TOKEN` (el token) y `TELEGRAM_WEBHOOK_SECRET` (un
      valor aleatorio, te lo genero yo) en Vercel.
 
-4. **Registrar el webhook** — una vez desplegado con esas variables, hay
+5. **Registrar el webhook** — una vez desplegado con esas variables, hay
    que decirle a Telegram dónde mandar los mensajes que reciba el bot
    (ejecútalo tú o dímelo y lo hago yo con el token):
    ```bash
    curl "https://api.telegram.org/bot<TELEGRAM_BOT_TOKEN>/setWebhook?url=https://<tu-dominio>/api/telegram/webhook&secret_token=<TELEGRAM_WEBHOOK_SECRET>"
    ```
 
-5. **Vincular Telegram** — cada usuario, desde `/perfil`, genera un código
+6. **Vincular Telegram** — cada usuario, desde `/perfil`, genera un código
    y se lo envía al bot como `/start <código>` desde su propio Telegram
    para empezar a recibir avisos.
 

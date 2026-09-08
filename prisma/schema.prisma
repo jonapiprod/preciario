@@ -61,13 +61,16 @@ model Product {
 }
 
 model User {
-  id                 String             @id @default(cuid())
-  email              String             @unique
-  passwordHash       String?
-  googleId           String?            @unique
-  telegramChatId     String?            @unique
-  telegramLinkCode   String?            @unique
-  createdAt          DateTime           @default(now())
+  id                          String             @id @default(cuid())
+  email                       String             @unique
+  passwordHash                String?
+  googleId                    String?            @unique
+  emailVerified               Boolean            @default(false)
+  emailVerificationToken      String?            @unique
+  emailVerificationExpiresAt  DateTime?
+  telegramChatId              String?            @unique
+  telegramLinkCode            String?            @unique
+  createdAt                   DateTime           @default(now())
   favoriteProducts   FavoriteProduct[]
   favoriteCategories FavoriteCategory[]
 }

@@ -41,7 +41,11 @@ export default function SignupForm({ googleEnabled }: { googleEnabled: boolean }
           <p className="mt-1 text-xs text-red-600">{state.errors.password[0]}</p>
         )}
       </div>
-      {state?.message && <p className="text-sm text-red-600">{state.message}</p>}
+      {state?.message && (
+        <p className={`text-sm ${state.success ? "text-green-700" : "text-red-600"}`}>
+          {state.message}
+        </p>
+      )}
       <button
         disabled={pending}
         type="submit"
